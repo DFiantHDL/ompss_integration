@@ -1,4 +1,4 @@
-PROGRAM_     = loopback
+PROGRAM_     = matmul
 
 CFLAGS_      = $(CFLAGS) -O3 -std=gnu99
 MCC_FLAGS_   = --ompss --variable=disable_final_clause_transformation:1
@@ -43,8 +43,9 @@ endif
 ##CFLAGS += -DUSE_DOUBLE
 ##CFLAGS += -DUSE_IMPLEMENTS
 CFLAGS_ += -DMATMUL_BLOCK_SIZE=$(MATMUL_BLOCK_SIZE) -DMATMUL_BLOCK_II=$(MATMUL_BLOCK_II) -DMATMUL_NUM_ACCS=$(MATMUL_NUM_ACCS)
-#FPGA_LINKER_FLAGS =--Wf,"--name=$(PROGRAM_),--board=$(BOARD),-c=$(FPGA_CLOCK),--hwruntime=som,--interconnection_opt=performance,--to_step=design"
-FPGA_LINKER_FLAGS =--Wf,"--name=$(PROGRAM_),--board=$(BOARD),-c=$(FPGA_CLOCK),--hwruntime=som,--interconnection_opt=performance,--to_step=bitstream"
+FPGA_LINKER_FLAGS =--Wf,"--name=$(PROGRAM_),--board=$(BOARD),-c=$(FPGA_CLOCK),--hwruntime=som,--interconnection_opt=performance,--to_step=design"
+sbt compile "runMain Synth"
+FPGA_LINKER_FLAGS =--Wf,"--name=$(PROGRAM_),--board=$(BOARD),-c=$(FPGA_CLOCK),--hwruntime=som,--interconnection_opt=performance,--from_step=synthesis,--to_step=bitstream"
 
 all: help
 help:
@@ -95,6 +96,9 @@ info:
 	@echo "  Headers:          $(if $(wildcard $(MKL_INC_DIR)/mkl.h ),YES,NO)"
 	@echo "  Lib files (.so):  $(if $(wildcard $(MKL_LIB_DIR)/libmkl_sequential.so ),YES,NO)"
 	@echo "=============================="
+
+dfiantSim: 
+	sbt compile "runMain Sim"
 
 clean:
 	rm -fv *.o $(PROGRAM_)-? $(MCC_)_$(PROGRAM_).c *:*_hls_automatic_mcxx.cpp

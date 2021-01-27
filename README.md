@@ -7,21 +7,23 @@ This repository holds an example of [OmpSs@FPGA](https://pm.bsc.es/ompss-at-fpga
 
 * OmpSs @ FPGA Installation. Follow instructions of its [user-guide](https://pm.bsc.es/ftp/ompss-at-fpga/doc/user-guide/).
 
-* Scala Build Tool (SBT) Installation. Follow instruction of its [user-guide](https://www.scala-sbt.org/1.x/docs/Getting-Started.html).
+* Scala Tools Installation via Coursier. Follow instruction of its [user-guide](https://alexarchambault.github.io/posts/2020-09-21-cs-setup.html).
+
+* For Simulation: Install either GHDL or Modelsim. 
 
 * Locally clone this repo via: 
 
 `git clone https://github.com/DFiantHDL/ompss_integration.git`
 
+# Simulating DFiant Code
+
+Run `sbt compile "runMain Sim"` in either `loopback` or `matmul` demo folders (also supported running: `make dfiantSim`). 
 
 # Building and Running
 
-1. Run `make` under the `ompss_loopback` folder. A new Vivado project will be created to that relies on existing Vivado HLS and OmpSs integration.  
+The makefile is already modified to integrate the DFiant kernel as part of the bitstream build.
 
-2. Run `sbt run` under the `dfiant_loopback` folder. The dfiant project will generate an alternative `loopback_moved.vhdl` to be used as replacement for the one generated in the OmpSs build process.
+1. Run `make` in either `loopback` or `matmul` demo folders. A new Vivado project will be created to that relies on existing Vivado HLS and OmpSs integration.  
 
-3. Replace the `loopback_moved.vhdl` inside the Vivado project (as a VHDL 2008 file) and rebuild the project to generate an updated bitstream file.
+2. Stream the bitstream into your FPGA and run OmpSs on the Zync. The program should run with no errors.
 
-4. Stream the bitstream into your FPGA and run OmpSs on the Zync. The program should run with no errors.
-
-(for the final integration we will attempt to automate these steps)
